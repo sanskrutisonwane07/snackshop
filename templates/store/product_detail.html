@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - SnackShop{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+  <div class="product-detail-image">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% else %}
+      <div class="no-image large">No image</div>
+    {% endif %}
+  </div>
+
+  <div class="product-detail-info">
+    <h1>{{ product.name }}</h1>
+    <p class="category-tag">{{ product.category.name }}</p>
+    <p class="price large">₹{{ product.price }}</p>
+
+    {% if product.in_stock %}
+      <span class="stock in">In stock ({{ product.stock }} available)</span>
+    {% else %}
+      <span class="stock out">Out of stock</span>
+    {% endif %}
+
+    <p class="description">{{ product.description }}</p>
+
+    {% if product.in_stock %}
+      <form action="{% url 'cart:cart_add' product.id %}" method="post">
+        {% csrf_token %}
+        {{ cart_product_form }}
+        <button type="submit" class="btn primary">Add to cart</button>
+      </form>
+    {% endif %}
+
+    <a href="{% url 'store:product_list' %}" class="back-link">&larr; Back to snacks</a>
+  </div>
+</div>
+{% endblock %}

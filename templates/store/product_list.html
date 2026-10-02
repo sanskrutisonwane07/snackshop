@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  {% if category %}{{ category.name }} - {% endif %}SnackShop
+{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <aside class="sidebar">
+    <h3>Categories</h3>
+    <ul class="category-list">
+      <li {% if not category %}class="active"{% endif %}>
+        <a href="{% url 'store:product_list' %}">All snacks</a>
+      </li>
+      {% for c in categories %}
+        <li {% if category.slug == c.slug %}class="active"{% endif %}>
+          <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+  <section class="product-grid">
+    {% if query %}
+      <p class="results-info">Showing results for "{{ query }}"</p>
+    {% endif %}
+
+    {% if products %}
+      <div class="grid">
+        {% for product in products %}
+          <div class="product-card">
+            <a href="{{ product.get_absolute_url }}">
+              {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+              {% else %}
+                <div class="no-image">No image</div>
+              {% endif %}
+              <h4>{{ product.name }}</h4>
+            </a>
+            <p class="price">₹{{ product.price }}</p>
+            {% if product.in_stock %}
+              <span class="stock in">In stock</span>
+            {% else %}
+              <span class="stock out">Out of stock</span>
+            {% endif %}
+            <a href="{{ product.get_absolute_url }}" class="btn">View</a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>No snacks found.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

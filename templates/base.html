@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}SnackShop{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="{% url 'store:product_list' %}" class="logo">🍿 SnackShop</a>
+
+      <form class="search-form" action="{% url 'store:product_list' %}" method="get">
+        <input type="text" name="q" placeholder="Search snacks..." value="{{ query|default:'' }}">
+        <button type="submit">Search</button>
+      </form>
+
+      <nav class="nav-links">
+        {% if request.user.is_authenticated %}
+          <span>Hi, {{ request.user.username }}</span>
+          <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}">Login</a>
+          <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+        <a href="{% url 'cart:cart_detail' %}" class="cart-link">
+          🛒 Cart
+          {% if cart|length > 0 %}<span class="cart-count">{{ cart|length }}</span>{% endif %}
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; {% now "Y" %} SnackShop. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
